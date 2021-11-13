@@ -1,7 +1,7 @@
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Calculator calculator = new Calculator();
-        String postfix = calculator.infixToPostfix("10*5+15-(4+1)^2-25");
+        String postfix = calculator.fromInfixToPostfix("sin(30)+5^2*(3+2)");
         System.out.println(postfix);
     }
 }
