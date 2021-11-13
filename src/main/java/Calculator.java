@@ -5,45 +5,36 @@ import java.util.StringTokenizer;
  *
  */
 public class Calculator {
-
     /**
-     * Value that saved calculated expression
+     * @param token - character of string
+     * @return is token function or not
      */
-    private double calculatedValue;
-
-    /**
-     * Default constructor
-     */
-    public Calculator() {
-        this.calculatedValue = 0;
-    }
-
     private static boolean isFunction(String token) {
-        return (token.equals("sin") || token.equals("cos") || token.equals("tg") || token.equals("ctg"));
+        return (token.equals("sin") || token.equals("cos") || token.equals("tan") || token.equals("u-"));
     }
 
     /**
-     * @param token
-     * @return
+     * @param token - character of string
+     * @return is token operator or not
      */
     private static boolean isOperator(String token) {
-        return (token.equals("-") || token.equals("*") || token.equals("/") ||
-                token.equals("^") || token.equals("+"));
+        return (token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/") ||
+                token.equals("^"));
     }
 
     /**
-     * @param token
-     * @return
+     * @param token - character of string
+     * @return is token delimeter or not
      */
     private static boolean isDelimiter(String token) {
         return (token.equals("(") || token.equals(")") || isOperator(token));
     }
 
     /**
-     * @param token
-     * @return
+     * @param token - character of string
+     * @return - priority of operation
      */
-    private static int priority(String token) {
+    private static int getPriorityOfOperation(String token) {
         return switch (token) {
             case "(" -> 1;
             case "+", "-" -> 2;
@@ -53,54 +44,141 @@ public class Calculator {
     }
 
     /**
-     * @param infixExpr
-     * @return
-     * @throws Exception
+     * @param infixExpr - expression in infix form
+     * @return - expression in postfix form
+     * @throws Exception - if the expression is written incorrectly
      */
     public String fromInfixToPostfix(String infixExpr) throws Exception {
         Stack<String> stack = new Stack<>();
         StringTokenizer infix = new StringTokenizer(infixExpr, "+-*/^()", true);
         StringBuilder postfixExpr = new StringBuilder();
-
+        String previous = "";
         while (infix.hasMoreTokens()) {
-            String temp = infix.nextToken();
+            String current = infix.nextToken();
 
-            if (!infix.hasMoreTokens() && isOperator(temp))
+            if (!infix.hasMoreTokens() && isOperator(current))
                 throw new Exception("Expression is incorrect");
 
-            if (!isDelimiter(temp) && !isFunction(temp))
-                postfixExpr.append(temp).append(" ");
-            else {
-                if (isFunction(temp))
-                    stack.push(temp);
-                else if (temp.equals("("))
-                    stack.push(temp);
-                else if (temp.equals(")")) {
+            //if (current.equals(" ")) continue;
+            if (isDelimiter(current) || isFunction(current)) {
+                if (isFunction(current))
+                    stack.push(current);
+                else if (current.equals("("))
+                    stack.push(current);
+                else if (current.equals(")")) {
                     while (!stack.peek().equals("(")) {
                         postfixExpr.append(stack.pop()).append(" ");
                         if (stack.isEmpty()) throw new Exception("The brackets are not consistent");
                     }
                     stack.pop();
-                } else {
-                    while (!stack.isEmpty() && (priority(temp) <= (priority(stack.peek()))))
-                        postfixExpr.append(stack.pop()).append(" ");
-                    stack.push(temp);
                 }
+                else{
+                    if (current.equals("-") && (previous.isEmpty() || previous.equals("(")))
+                        stack.push("u-");
+                    else {
+                        while (!stack.isEmpty() && (getPriorityOfOperation(current) <= (getPriorityOfOperation(stack.peek()))))
+                            postfixExpr.append(stack.pop()).append(" ");
+                        stack.push(current);
+                    }
+                }
+                previous = current;
+
+            } else {
+                postfixExpr.append(current).append(" ");
             }
         }
         while (!stack.isEmpty()) {
             if(isOperator(stack.peek()))
                 postfixExpr.append(stack.pop()).append(" ");
             else
-                throw new Exception("Syntax error");
+                throw new Exception("The brackets are not consistent");
         }
         return postfixExpr.toString();
     }
 
+    /**
+     * @param postfixExpr
+     * @return
+     * @throws ArithmeticException
+     */
+    public Double getCalculatedExpresssion(String postfixExpr) throws ArithmeticException {
+        StringTokenizer postfix = new StringTokenizer(postfixExpr);
+        Stack<Double> stack = new Stack<>();
 
+        while (postfix.hasMoreTokens()) {
+            String current = postfix.nextToken();
 
+            if (isDelimiter(current)) {
+                if(isFunction(current)) {
+                    switch (current) {
+                        case "sin" -> stack.push(Math.sin(stack.pop()));
+                        case "cos" -> stack.push(Math.cos(stack.pop()));
+                        case "tan" -> stack.push(Math.tan(stack.pop()));
+                        case "u-" -> stack.push(stack.pop() * -1.);
+                    }
+                }
+                else if(isOperator(current)){
+                    Double upper = stack.pop();
+                    if(upper == 0) throw new ArithmeticException("Division by zero");
+                    Double lower = stack.pop();
+                    switch (current) {
+                        case "+" -> stack.push(lower + upper);
+                        case "-" -> stack.push(lower - upper);
+                        case "*" -> stack.push(lower * upper);
+                        case "/" -> stack.push(lower / upper);
+                        case "^" -> stack.push(Math.pow(lower, upper));
+                    }
+                }
+            } else {
+                try {
+                    stack.push(Double.parseDouble(current));
+                }
+                catch (NumberFormatException e) {
+                    e.getMessage();
+                }
 
+            }
+        }
+        return stack.pop();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
