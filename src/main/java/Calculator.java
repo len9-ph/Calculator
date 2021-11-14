@@ -4,11 +4,16 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 
 /**
- *
+ * Class that calculated given expression
+ * @author Leonid Gadetsky
+ * @see ValueInput
  */
 public class Calculator {
 
-    private String expression;
+    /**
+     * value that stores expr
+     */
+    private final String expression;
 
     /**
      * Default constructor
@@ -117,7 +122,7 @@ public class Calculator {
         StringTokenizer postfix = new StringTokenizer(postfixExpr);
         Stack<Double> stack = new Stack<>();
         ValueInput valueInput = new ValueInput();
-        valueInput.inputValues(postfixExpr);
+        valueInput.inputValues(this.expression);
 
         while (postfix.hasMoreTokens()) {
             String current = postfix.nextToken();

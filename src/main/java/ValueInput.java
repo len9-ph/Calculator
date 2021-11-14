@@ -1,17 +1,26 @@
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * Class that perform string scanning
+ * @author Leonid Gadetsky
+ *
+ */
 public class ValueInput {
+
+    /**
+     * HaspMap that stores operands and their values
+     */
     HashMap<Character, Double> operands;
 
     public ValueInput() {
         this.operands = new HashMap<>();
     }
 
-    /*public HashMap<Character, Double> getOperands() {
-        return operands;
-    }*/
-
+    /**
+     * Method that scan string and ask user for value of letter variables
+     * @param input - expression
+     */
     public void inputValues(String input) {
         for(Character current : input.toCharArray()) {
             if (Character.isLetter(current)) {
@@ -25,6 +34,9 @@ public class ValueInput {
         }
     }
 
+    /**
+     * @return hashmap in string form
+     */
     @Override
     public String toString() {
         return operands.toString();
