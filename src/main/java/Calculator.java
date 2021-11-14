@@ -105,7 +105,7 @@ public class Calculator {
             previous = current;
         }
         while (!stack.isEmpty()) {
-            if(isOperator(stack.peek()))
+            if(isOperator(stack.peek()) || isFunction(stack.peek()))
                 postfixExpr.append(stack.pop()).append(" ");
             else
                 throw new Exception("The brackets are not consistent");
@@ -114,13 +114,13 @@ public class Calculator {
     }
 
     /**
-     * @param postfixExpr - expression in postfix form
      * @return - evaluated value of expr
      * @throws ArithmeticException - if we have zero division
      */
-    public Double getCalculatedExpression(String postfixExpr) throws ArithmeticException {
-        StringTokenizer postfix = new StringTokenizer(postfixExpr);
+    public Double getCalculatedExpression() throws Exception {
+        StringTokenizer postfix = new StringTokenizer(this.fromInfixToPostfix());
         Stack<Double> stack = new Stack<>();
+
         ValueInput valueInput = new ValueInput();
         valueInput.inputValues(this.expression);
 
