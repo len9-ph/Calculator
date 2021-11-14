@@ -17,7 +17,7 @@ class CalculatorTest {
         Calculator calculator3 = new Calculator("(-10 - 5)");
         assertEquals(calculator3.getCalculatedExpression(), -15);
 
-       Calculator calculator4 = new Calculator("7+(-10)*43+sin(0.52)");
-        assertEquals(calculator4.getCalculatedExpression(), -5);
+       Calculator calculator4 = new Calculator("7+(-10)*43");
+        assertEquals(calculator4.getCalculatedExpression(), -423);
     }
 }
