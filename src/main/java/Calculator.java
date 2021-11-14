@@ -7,6 +7,17 @@ import java.util.StringTokenizer;
  *
  */
 public class Calculator {
+
+    private String expression;
+
+    /**
+     * Default constructor
+     * @param expression - expression that need to be calculated
+     */
+    public Calculator(String expression) {
+        this.expression = expression;
+    }
+
     /**
      * @param token - character of string
      * @return is token function or not
@@ -26,7 +37,7 @@ public class Calculator {
 
     /**
      * @param token - character of string
-     * @return is token delimeter or not
+     * @return is token delimiter or not
      */
     private static boolean isDelimiter(String token) {
         return (token.equals("(") || token.equals(")") || isOperator(token));
@@ -46,13 +57,12 @@ public class Calculator {
     }
 
     /**
-     * @param infixExpr - expression in infix form
      * @return - expression in postfix form
      * @throws Exception - if the expression is written incorrectly
      */
-    public String fromInfixToPostfix(String infixExpr) throws Exception {
+    public String fromInfixToPostfix() throws Exception {
         Stack<String> stack = new Stack<>();
-        StringTokenizer infix = new StringTokenizer(infixExpr, "+-*/^()", true);
+        StringTokenizer infix = new StringTokenizer(this.expression, "+-*/^()", true);
         StringBuilder postfixExpr = new StringBuilder();
         String previous = "";
         while (infix.hasMoreTokens()) {
@@ -103,15 +113,18 @@ public class Calculator {
      * @return - evaluated value of expr
      * @throws ArithmeticException - if we have zero division
      */
-    public Double getCalculatedExpresssion(String postfixExpr) throws ArithmeticException {
+    public Double getCalculatedExpression(String postfixExpr) throws ArithmeticException {
         StringTokenizer postfix = new StringTokenizer(postfixExpr);
         Stack<Double> stack = new Stack<>();
+        ValueInput valueInput = new ValueInput();
+        valueInput.inputValues(postfixExpr);
+
         while (postfix.hasMoreTokens()) {
             String current = postfix.nextToken();
 
             if (isDelimiter(current) || isFunction(current)) {
                 if(isFunction(current)) {
-                    switch (current.toString()) {
+                    switch (current) {
                         case "sin" -> stack.push(Math.sin(stack.pop()));
                         case "cos" -> stack.push(Math.cos(stack.pop()));
                         case "tan" -> stack.push(Math.tan(stack.pop()));
@@ -135,7 +148,7 @@ public class Calculator {
                     stack.push(Double.parseDouble(current));
                 }
                 catch (NumberFormatException e) {
-                    e.getMessage();
+                    stack.push(valueInput.operands.get(current.charAt(0)));
                 }
 
             }
