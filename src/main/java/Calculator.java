@@ -1,3 +1,5 @@
+import java.net.Inet4Address;
+import java.util.HashMap;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
@@ -59,7 +61,7 @@ public class Calculator {
             if (!infix.hasMoreTokens() && isOperator(current))
                 throw new Exception("Expression is incorrect");
 
-            //if (current.equals(" ")) continue;
+            if (current.equals(" ")) continue;
             if (isDelimiter(current) || isFunction(current)) {
                 if (isFunction(current))
                     stack.push(current);
@@ -81,11 +83,11 @@ public class Calculator {
                         stack.push(current);
                     }
                 }
-                previous = current;
 
             } else {
                 postfixExpr.append(current).append(" ");
             }
+            previous = current;
         }
         while (!stack.isEmpty()) {
             if(isOperator(stack.peek()))
@@ -97,24 +99,23 @@ public class Calculator {
     }
 
     /**
-     * @param postfixExpr
-     * @return
-     * @throws ArithmeticException
+     * @param postfixExpr - expression in postfix form
+     * @return - evaluated value of expr
+     * @throws ArithmeticException - if we have zero division
      */
     public Double getCalculatedExpresssion(String postfixExpr) throws ArithmeticException {
         StringTokenizer postfix = new StringTokenizer(postfixExpr);
         Stack<Double> stack = new Stack<>();
-
         while (postfix.hasMoreTokens()) {
             String current = postfix.nextToken();
 
-            if (isDelimiter(current)) {
+            if (isDelimiter(current) || isFunction(current)) {
                 if(isFunction(current)) {
-                    switch (current) {
+                    switch (current.toString()) {
                         case "sin" -> stack.push(Math.sin(stack.pop()));
                         case "cos" -> stack.push(Math.cos(stack.pop()));
                         case "tan" -> stack.push(Math.tan(stack.pop()));
-                        case "u-" -> stack.push(stack.pop() * -1.);
+                        case "u-" -> stack.push(-stack.pop());
                     }
                 }
                 else if(isOperator(current)){
