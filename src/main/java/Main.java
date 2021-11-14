@@ -1,7 +1,6 @@
 public class Main {
     public static void main(String[] args) throws Exception {
-        Calculator calculator = new Calculator();
-        String postfix = calculator.fromInfixToPostfix("sin(30)+5^2*(3+2)");
-        System.out.println(postfix);
+        Calculator calculator = new Calculator("7-10*43+sin(0.52)");
+        System.out.println(calculator.fromInfixToPostfix());
     }
 }
